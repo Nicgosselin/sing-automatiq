@@ -1,559 +1,604 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FaceSwap AI — Propulsé par GTX 1080 Ti</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg: #0a0a0f;
-      --surface: #12121a;
-      --card: #1a1a26;
-      --border: #2a2a3d;
-      --accent: #7c5cfc;
-      --accent2: #e040fb;
-      --glow: rgba(124, 92, 252, 0.35);
-      --text: #eef0ff;
-      --muted: #6b6b8a;
-      --success: #22c55e;
-      --radius: 16px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SING Automatiq — AgentPME</title>
+<meta name="description" content="Agents IA sur mesure pour PME québécoises. Répondez à vos clients 24/7, automatiquement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --white:#FFFFFF;
+  --off:#F8F7F4;
+  --light:#EEECE8;
+  --border:#E2DDD8;
+  --muted:#8A8480;
+  --dark:#1A1714;
+  --navy:#1B2B4B;
+  --blue:#2356C7;
+  --blue-light:#EEF3FC;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Manrope',system-ui,sans-serif;
+}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+html{scroll-behavior:smooth}
 
-    /* ── Background ambiance ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 60% 40% at 20% 0%, rgba(124,92,252,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 30% at 80% 100%, rgba(224,64,251,0.08) 0%, transparent 60%);
-      pointer-events: none; z-index: 0;
-    }
+body{
+  background:var(--white);
+  color:var(--dark);
+  font-family:var(--font-sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
 
-    /* ── Header ── */
-    header {
-      position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(20px);
-      background: rgba(10,10,15,0.8);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 64px;
-    }
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 3rem;
+  height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+}
 
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 1.4rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
-    }
+.logo{
+  font-family:var(--font-sans);
+  font-weight:600;
+  font-size:0.95rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--dark);
+  text-decoration:none;
+}
 
-    .badge-gpu {
-      background: rgba(124,92,252,0.15);
-      border: 1px solid rgba(124,92,252,0.4);
-      color: #b39dff;
-      font-size: 0.72rem; font-weight: 500;
-      padding: 4px 10px; border-radius: 20px;
-      display: flex; align-items: center; gap: 5px;
-    }
-    .badge-gpu::before { content: '⚡'; }
+.logo em{color:var(--blue);font-style:normal}
 
-    /* ── Main layout ── */
-    main {
-      position: relative; z-index: 1;
-      max-width: 1100px; margin: 0 auto;
-      padding: 3rem 1.5rem 5rem;
-    }
+.nav-links{display:flex;align-items:center;gap:2.5rem}
 
-    .hero { text-align: center; margin-bottom: 3rem; }
-    .hero h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 0.8rem;
-    }
-    .hero h1 span {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero p { color: var(--muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
+.nav-links a{
+  font-size:0.85rem;
+  font-weight:500;
+  color:var(--muted);
+  text-decoration:none;
+  transition:color 0.15s;
+}
 
-    /* ── Tabs ── */
-    .tabs {
-      display: flex; gap: 8px; justify-content: center;
-      margin-bottom: 2.5rem;
-    }
-    .tab {
-      padding: 10px 22px; border-radius: 40px;
-      font-size: 0.88rem; font-weight: 500; cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--card); color: var(--muted);
-      transition: all .2s ease;
-    }
-    .tab.active {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-color: transparent; color: #fff;
-      box-shadow: 0 0 20px var(--glow);
-    }
-    .tab:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+.nav-links a:hover{color:var(--dark)}
 
-    /* ── Upload zone ── */
-    .workspace {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 1.5rem; margin-bottom: 1.5rem;
-    }
-    @media(max-width: 680px) { .workspace { grid-template-columns: 1fr; } }
+.nav-cta{
+  background:var(--dark) !important;
+  color:var(--white) !important;
+  padding:0.55rem 1.4rem;
+  border-radius:6px;
+  font-size:0.82rem !important;
+  font-weight:600 !important;
+}
 
-    .upload-card {
-      background: var(--card);
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      min-height: 260px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 1rem; padding: 2rem;
-      cursor: pointer; transition: all .25s ease;
-      position: relative; overflow: hidden;
-    }
-    .upload-card:hover, .upload-card.dragover {
-      border-color: var(--accent);
-      background: rgba(124,92,252,0.06);
-      box-shadow: 0 0 30px rgba(124,92,252,0.12);
-    }
-    .upload-card input[type=file] { display: none; }
+/* HERO */
+.hero{
+  padding:160px 3rem 100px;
+  max-width:1200px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:4rem;
+  align-items:center;
+}
 
-    .upload-icon {
-      width: 56px; height: 56px; border-radius: 14px;
-      background: rgba(124,92,252,0.15);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-      transition: transform .3s ease;
-    }
-    .upload-card:hover .upload-icon { transform: scale(1.1); }
+.hero-left{}
 
-    .upload-label {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 0.95rem;
-    }
-    .upload-hint { color: var(--muted); font-size: 0.8rem; }
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--blue);
+  margin-bottom:2rem;
+}
 
-    .upload-btn {
-      padding: 9px 20px; border-radius: 8px;
-      background: rgba(124,92,252,0.2);
-      border: 1px solid rgba(124,92,252,0.4);
-      color: #b39dff; font-size: 0.85rem; font-weight: 500;
-      cursor: pointer; transition: all .2s;
-    }
-    .upload-btn:hover { background: rgba(124,92,252,0.35); }
+.hero-eyebrow span{
+  width:24px;height:1px;background:var(--blue);display:inline-block
+}
 
-    /* ── Preview image ── */
-    .preview-img {
-      width: 100%; height: 100%;
-      object-fit: contain; border-radius: 10px;
-      position: absolute; inset: 0; padding: 12px;
-    }
-    .preview-overlay {
-      position: absolute; inset: 0;
-      background: rgba(10,10,15,0.7);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .2s;
-      border-radius: var(--radius);
-    }
-    .upload-card:hover .preview-overlay { opacity: 1; }
-    .change-btn {
-      padding: 8px 18px; border-radius: 8px;
-      background: var(--accent); color: #fff;
-      font-weight: 600; font-size: 0.85rem;
-    }
+h1{
+  font-family:var(--font-serif);
+  font-size:clamp(3rem,5vw,4.8rem);
+  font-weight:500;
+  line-height:1.05;
+  letter-spacing:-0.01em;
+  color:var(--dark);
+  margin-bottom:1.75rem;
+}
 
-    /* ── CTA Button ── */
-    .cta-row { display: flex; justify-content: center; margin-bottom: 2rem; }
-    .swap-btn {
-      position: relative; overflow: hidden;
-      padding: 16px 48px; border-radius: 50px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; font-family: 'Syne', sans-serif;
-      font-size: 1.05rem; font-weight: 700;
-      border: none; cursor: pointer;
-      box-shadow: 0 8px 32px var(--glow);
-      transition: transform .2s, box-shadow .2s;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .swap-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px var(--glow); }
-    .swap-btn:active { transform: translateY(0); }
-    .swap-btn:disabled {
-      opacity: 0.45; cursor: not-allowed;
-      transform: none; box-shadow: none;
-    }
-    .swap-btn::after {
-      content: ''; position: absolute;
-      inset: -2px; border-radius: 52px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      z-index: -1; filter: blur(10px); opacity: 0;
-      transition: opacity .3s;
-    }
-    .swap-btn:hover::after { opacity: 0.5; }
+h1 em{font-style:italic;color:var(--blue)}
 
-    /* ── Result zone ── */
-    #result-section { display: none; }
-    .result-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-    }
-    .result-header {
-      padding: 1rem 1.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-    .result-title {
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .success-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
-    .result-body { padding: 1.5rem; display: flex; justify-content: center; }
-    #result-img {
-      max-width: 100%; max-height: 480px;
-      border-radius: 10px; object-fit: contain;
-    }
-    .result-actions { display: flex; gap: 10px; }
-    .action-btn {
-      padding: 8px 18px; border-radius: 8px;
-      border: 1px solid var(--border);
-      background: transparent; color: var(--text);
-      font-size: 0.85rem; cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-      transition: all .2s;
-    }
-    .action-btn:hover { border-color: var(--accent); background: rgba(124,92,252,0.1); }
-    .action-btn.primary {
-      background: var(--accent); border-color: var(--accent); color: #fff;
-    }
-    .action-btn.primary:hover { background: #6a4ee8; }
+.hero-sub{
+  font-size:1.05rem;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.8;
+  max-width:480px;
+  margin-bottom:2.5rem;
+}
 
-    /* ── Progress ── */
-    #progress-section { display: none; padding: 2rem 0; }
-    .progress-wrap { text-align: center; }
-    .progress-bar-bg {
-      background: var(--card); border-radius: 40px;
-      height: 6px; overflow: hidden; margin: 1rem auto;
-      max-width: 420px;
-    }
-    .progress-bar-fill {
-      height: 100%; border-radius: 40px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      width: 0%; transition: width .4s ease;
-      box-shadow: 0 0 12px var(--glow);
-    }
-    .progress-status { color: var(--muted); font-size: 0.88rem; margin-top: 0.5rem; }
+.hero-actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
 
-    /* ── Error ── */
-    #error-box {
-      display: none;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 10px; padding: 12px 18px;
-      color: #fca5a5; font-size: 0.9rem;
-      margin-bottom: 1rem; text-align: center;
-    }
+.btn-dark{
+  background:var(--dark);color:var(--white);
+  font-family:var(--font-sans);font-weight:500;font-size:0.9rem;
+  padding:0.85rem 2rem;border-radius:6px;
+  text-decoration:none;transition:opacity 0.2s;
+}
 
-    /* ── Features ── */
-    .features {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem; margin-top: 3rem;
-    }
-    .feature-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.2rem;
-      transition: border-color .2s;
-    }
-    .feature-card:hover { border-color: rgba(124,92,252,0.4); }
-    .feat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .feat-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem;
-    }
-    .feat-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+.btn-dark:hover{opacity:0.85}
 
-    /* ── Toast ── */
-    .toast {
-      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
-      background: var(--card); border: 1px solid var(--accent);
-      border-radius: 10px; padding: 12px 20px;
-      color: var(--text); font-size: 0.9rem;
-      transform: translateY(80px); opacity: 0;
-      transition: all .3s cubic-bezier(.34,1.56,.64,1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
-  </style>
+.btn-ghost{
+  font-family:var(--font-sans);font-weight:500;font-size:0.9rem;
+  color:var(--muted);text-decoration:none;
+  display:flex;align-items:center;gap:0.4rem;
+  transition:color 0.2s;
+}
+
+.btn-ghost:hover{color:var(--dark)}
+
+/* HERO CARD */
+.hero-card{
+  background:var(--off);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:2rem;
+}
+
+.chat-bubble{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1rem 1.25rem;
+  margin-bottom:0.75rem;
+  font-size:0.88rem;
+  line-height:1.6;
+  position:relative;
+}
+
+.chat-bubble.agent{
+  background:var(--blue-light);
+  border-color:rgba(35,86,199,0.15);
+}
+
+.chat-label{
+  font-size:0.7rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:0.4rem;
+}
+
+.chat-label.agent-label{color:var(--blue)}
+
+.response-time{
+  display:flex;align-items:center;gap:0.5rem;
+  margin-top:1.25rem;padding-top:1.25rem;
+  border-top:1px solid var(--border);
+  font-size:0.8rem;color:var(--muted);
+}
+
+.dot{width:8px;height:8px;border-radius:50%;background:#22C55E;flex-shrink:0}
+
+/* DIVIDER */
+.divider{
+  border:none;border-top:1px solid var(--border);
+  max-width:1200px;margin:0 auto;
+}
+
+/* LOGOS / SOCIAL PROOF */
+.proof-bar{
+  max-width:1200px;margin:0 auto;
+  padding:3rem;
+  display:flex;align-items:center;gap:3rem;flex-wrap:wrap;
+}
+
+.proof-label{
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap;
+}
+
+.proof-items{
+  display:flex;gap:2.5rem;flex-wrap:wrap;align-items:center
+}
+
+.proof-item{
+  font-size:0.85rem;font-weight:500;color:var(--light);
+  color:#B8B4AE;letter-spacing:0.03em;
+}
+
+/* STATS */
+.stats{
+  background:var(--navy);
+  padding:5rem 3rem;
+}
+
+.stats-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;
+}
+
+.stat{border-left:2px solid rgba(255,255,255,0.1);padding-left:1.75rem}
+
+.stat-n{
+  font-family:var(--font-serif);
+  font-size:3rem;font-weight:500;
+  color:var(--white);line-height:1;
+  margin-bottom:0.4rem;
+}
+
+.stat-l{font-size:0.85rem;color:rgba(255,255,255,0.45);font-weight:300}
+
+/* SECTIONS */
+.section{padding:6rem 3rem;max-width:1200px;margin:0 auto}
+
+.section-label{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--blue);margin-bottom:1rem;
+}
+
+h2{
+  font-family:var(--font-serif);
+  font-size:clamp(2rem,3.5vw,3.2rem);
+  font-weight:500;line-height:1.1;
+  letter-spacing:-0.01em;
+  color:var(--dark);margin-bottom:1.5rem;
+}
+
+/* PROBLEM */
+.two-col{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center
+}
+
+.problem-list{margin-top:2.5rem;display:flex;flex-direction:column;gap:1.25rem}
+
+.problem-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1.25rem 1.5rem;
+  border:1px solid var(--border);border-radius:10px;
+  transition:border-color 0.2s,background 0.2s;
+}
+
+.problem-item:hover{background:var(--off);border-color:var(--dark)}
+
+.problem-num{
+  font-family:var(--font-serif);
+  font-size:1.6rem;font-weight:500;
+  color:var(--border);line-height:1;
+  flex-shrink:0;min-width:28px;
+}
+
+.problem-item h3{
+  font-size:0.95rem;font-weight:600;
+  margin-bottom:0.25rem;
+}
+
+.problem-item p{font-size:0.87rem;color:var(--muted);line-height:1.6}
+
+/* STEPS */
+.steps-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;margin-top:4rem;
+  border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+
+.step-card{padding:2.5rem 2rem;border-right:1px solid var(--border)}
+.step-card:last-child{border-right:none}
+
+.step-n{
+  font-family:var(--font-serif);font-size:3rem;
+  font-weight:500;color:var(--border);
+  line-height:1;margin-bottom:1.5rem;
+}
+
+.step-card h3{
+  font-size:1rem;font-weight:600;
+  margin-bottom:0.6rem;
+}
+
+.step-card p{font-size:0.87rem;color:var(--muted);line-height:1.7}
+
+.step-tech{
+  display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1.25rem
+}
+
+.tech-tag{
+  font-size:0.7rem;font-weight:500;
+  background:var(--off);border:1px solid var(--border);
+  color:var(--muted);padding:0.2rem 0.6rem;border-radius:4px;
+  font-family:monospace;
+}
+
+/* WHY */
+.why-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  border:1px solid var(--border);border-radius:12px;overflow:hidden;
+  margin-top:3.5rem;background:var(--border);
+}
+
+.why-card{
+  background:var(--white);
+  padding:2.5rem;
+}
+
+.why-card:hover{background:var(--off)}
+
+.why-n{
+  font-family:var(--font-serif);font-size:0.85rem;
+  font-weight:500;color:var(--blue);
+  margin-bottom:1rem;letter-spacing:0.05em;
+}
+
+.why-card h3{font-size:1rem;font-weight:600;margin-bottom:0.5rem}
+.why-card p{font-size:0.87rem;color:var(--muted);line-height:1.7}
+
+/* CTA */
+.cta-wrap{
+  background:var(--dark);
+  padding:7rem 3rem;
+  text-align:center;
+}
+
+.cta-inner{max-width:620px;margin:0 auto}
+
+.cta-inner h2{color:var(--white)}
+.cta-inner h2 em{color:rgba(255,255,255,0.4)}
+
+.cta-inner p{
+  color:rgba(255,255,255,0.45);
+  font-size:1rem;font-weight:300;
+  line-height:1.8;margin-bottom:2.5rem;
+}
+
+.btn-white{
+  display:inline-block;
+  background:var(--white);color:var(--dark);
+  font-family:var(--font-sans);font-weight:600;font-size:0.95rem;
+  padding:1rem 2.5rem;border-radius:6px;
+  text-decoration:none;transition:opacity 0.2s;
+}
+
+.btn-white:hover{opacity:0.9}
+
+.cta-note{
+  font-size:0.78rem;color:rgba(255,255,255,0.25);
+  margin-top:1.5rem;
+}
+
+/* FOOTER */
+footer{
+  padding:2.5rem 3rem;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+}
+
+.footer-logo{
+  font-family:var(--font-sans);font-weight:600;
+  font-size:0.85rem;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--dark);text-decoration:none;
+}
+
+footer p{font-size:0.8rem;color:var(--muted)}
+
+/* ANIMATE */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.on{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:0 1.5rem}
+  .hero{grid-template-columns:1fr;padding:120px 1.5rem 60px;gap:3rem}
+  .hero-card{display:none}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .section{padding:4rem 1.5rem}
+  .two-col{grid-template-columns:1fr;gap:2.5rem}
+  .steps-grid{grid-template-columns:1fr}
+  .step-card{border-right:none;border-bottom:1px solid var(--border)}
+  .step-card:last-child{border-bottom:none}
+  .why-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;align-items:flex-start;padding:2rem 1.5rem}
+}
+</style>
 </head>
 <body>
 
-<header>
-  <div class="logo">FaceSwap AI</div>
-  <div class="badge-gpu">GTX 1080 Ti • CUDA</div>
-</header>
-
-<main>
-  <div class="hero">
-    <h1>Swap de visage<br/><span>100% local & gratuit</span></h1>
-    <p>Traitement local propulsé par ta GTX 1080 Ti. Photos, vidéos et GIFs. Rien ne quitte ton PC.</p>
+<nav>
+  <a href="#" class="logo">SING <em>Automatiq</em></a>
+  <div class="nav-links">
+    <a href="#solution">Solution</a>
+    <a href="#pourquoi">Pourquoi nous</a>
+    <a href="#contact" class="nav-cta">Contactez-nous</a>
   </div>
+</nav>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="photo">📸 Photo</div>
-    <div class="tab" data-tab="video">🎬 Vidéo / GIF</div>
-  </div>
-
-  <div id="error-box"></div>
-
-  <!-- Upload zone -->
-  <div class="workspace" id="workspace">
-    <!-- Source -->
-    <div class="upload-card" id="source-zone" ondragover="handleDrag(event,'source')" ondragleave="clearDrag('source')" ondrop="handleDrop(event,'source')">
-      <input type="file" id="source-input" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.gif,.webm"/>
-      <div class="upload-icon">🖼️</div>
-      <div class="upload-label">Image / Vidéo source</div>
-      <div class="upload-hint">La tête à remplacer</div>
-      <button class="upload-btn" onclick="document.getElementById('source-input').click()">Choisir fichier</button>
-    </div>
-    <!-- Target face -->
-    <div class="upload-card" id="target-zone" ondragover="handleDrag(event,'target')" ondragleave="clearDrag('target')" ondrop="handleDrop(event,'target')">
-      <input type="file" id="target-input" accept=".jpg,.jpeg,.png,.webp"/>
-      <div class="upload-icon">🧑</div>
-      <div class="upload-label">Photo du visage cible</div>
-      <div class="upload-hint">Le visage à insérer</div>
-      <button class="upload-btn" onclick="document.getElementById('target-input').click()">Choisir fichier</button>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left reveal">
+    <div class="hero-eyebrow"><span></span>AgentPME · Québec</div>
+    <h1>Votre agent IA répond.<br><em>Vous, vous travaillez.</em></h1>
+    <p class="hero-sub">SING Automatiq construit des systèmes d'information pilotés par IA pour les PME québécoises. Soumissions automatiques. Réservations instantanées.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-dark">Démarrer gratuitement</a>
+      <a href="#solution" class="btn-ghost">Comment ça marche →</a>
     </div>
   </div>
 
-  <div class="cta-row">
-    <button class="swap-btn" id="swap-btn" disabled onclick="doSwap()">
-      <span>⚡</span> Lancer le Swap
-    </button>
-  </div>
-
-  <!-- Progress -->
-  <div id="progress-section">
-    <div class="progress-wrap">
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progress-fill"></div>
-      </div>
-      <div class="progress-status" id="progress-status">Préparation…</div>
+  <div class="hero-card reveal">
+    <div class="chat-bubble">
+      <div class="chat-label">Client · Facebook Messenger · 23h14</div>
+      Bonjour, combien pour refaire une salle de bain 80 pi²? Armoires en bois franc.
+    </div>
+    <div class="chat-bubble agent">
+      <div class="chat-label agent-label">AgentPME · Réponse automatique</div>
+      Bonjour! Merci pour votre demande. Pour vous préparer une soumission précise, avez-vous déjà les matériaux choisis? Et quel est votre délai souhaité?
+    </div>
+    <div class="response-time">
+      <div class="dot"></div>
+      Réponse en 28 secondes · Pendant que vous dormiez
     </div>
   </div>
+</div>
 
-  <!-- Result -->
-  <div id="result-section">
-    <div class="result-card">
-      <div class="result-header">
-        <div class="result-title">
-          <div class="success-dot"></div>
-          Résultat
+<hr class="divider">
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat reveal">
+      <div class="stat-n">24/7</div>
+      <div class="stat-l">Disponibilité de l'agent</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-n">&lt;30s</div>
+      <div class="stat-l">Temps de réponse moyen</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-n">$0</div>
+      <div class="stat-l">Pour démarrer</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-n">100%</div>
+      <div class="stat-l">Open source &amp; local</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<div class="section">
+  <div class="two-col">
+    <div class="reveal">
+      <div class="section-label">Le problème</div>
+      <h2>Vous perdez des clients pendant que vous travaillez.</h2>
+      <p style="color:var(--muted);font-size:0.95rem;line-height:1.8">Un client qui n'obtient pas de réponse dans l'heure appelle le prochain entrepreneur sur sa liste. C'est aussi simple — et aussi coûteux — que ça.</p>
+    </div>
+    <div class="problem-list reveal">
+      <div class="problem-item">
+        <div class="problem-num">01</div>
+        <div>
+          <h3>Réponses trop lentes</h3>
+          <p>Les PME québécoises répondent en moyenne 18 heures après une demande. Vos concurrents, eux, ne dorment pas.</p>
         </div>
-        <div class="result-actions">
-          <button class="action-btn" onclick="resetAll()">↩ Recommencer</button>
-          <button class="action-btn primary" id="download-btn" onclick="downloadResult()">⬇ Télécharger</button>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">02</div>
+        <div>
+          <h3>Questions répétitives</h3>
+          <p>"Combien pour…?", "Êtes-vous disponible le…?" — les mêmes 5 questions, 20 fois par semaine.</p>
         </div>
       </div>
-      <div class="result-body">
-        <img id="result-img" src="" alt="Résultat face swap"/>
+      <div class="problem-item">
+        <div class="problem-num">03</div>
+        <div>
+          <h3>Rendez-vous perdus</h3>
+          <p>Sans système de réservation automatique, les créneaux se perdent dans les messages Facebook.</p>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Features -->
-  <div class="features">
-    <div class="feature-card">
-      <div class="feat-icon">🔒</div>
-      <div class="feat-title">100% Local</div>
-      <div class="feat-desc">Aucune image envoyée sur le cloud. Tout reste sur ta machine.</div>
+<hr class="divider">
+
+<!-- SOLUTION -->
+<div class="section" id="solution">
+  <div class="reveal">
+    <div class="section-label">La solution</div>
+    <h2>AgentPME — trois étapes,<br>zéro intervention.</h2>
+  </div>
+  <div class="steps-grid reveal">
+    <div class="step-card">
+      <div class="step-n">01</div>
+      <h3>Le client écrit</h3>
+      <p>Messenger, courriel ou formulaire web — l'agent intercepte chaque demande en temps réel, peu importe l'heure.</p>
+      <div class="step-tech">
+        <span class="tech-tag">Messenger</span>
+        <span class="tech-tag">Email</span>
+        <span class="tech-tag">Web</span>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-title">GPU Accéléré</div>
-      <div class="feat-desc">InsightFace + CUDA sur GTX 1080 Ti pour des résultats en secondes.</div>
+    <div class="step-card">
+      <div class="step-n">02</div>
+      <h3>L'agent qualifie</h3>
+      <p>L'IA pose les bonnes questions, analyse les réponses et génère une fourchette de prix basée sur vos tarifs réels.</p>
+      <div class="step-tech">
+        <span class="tech-tag">Ollama</span>
+        <span class="tech-tag">Qwen2.5</span>
+        <span class="tech-tag">n8n</span>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feat-icon">🎬</div>
-      <div class="feat-title">Photo & Vidéo</div>
-      <div class="feat-desc">Support JPG, PNG, MP4, MOV, GIF et WEBM jusqu'à 200 MB.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon">🎯</div>
-      <div class="feat-title">Multi-visages</div>
-      <div class="feat-desc">Détection et swap de plusieurs visages dans une même image.</div>
+    <div class="step-card">
+      <div class="step-n">03</div>
+      <h3>Réservation confirmée</h3>
+      <p>L'agent réserve directement dans votre calendrier. Vous recevez une notification. Vous confirmez d'un clic.</p>
+      <div class="step-tech">
+        <span class="tech-tag">Cal.com</span>
+        <span class="tech-tag">Google Cal</span>
+      </div>
     </div>
   </div>
-</main>
+</div>
 
-<div class="toast" id="toast"></div>
+<!-- WHY -->
+<div class="section" id="pourquoi" style="padding-top:2rem">
+  <div class="reveal">
+    <div class="section-label">Pourquoi S.I.N.G.</div>
+    <h2>Local. Transparent.<br>Vos données restent les vôtres.</h2>
+  </div>
+  <div class="why-grid reveal">
+    <div class="why-card">
+      <div class="why-n">Québécois</div>
+      <h3>Aucune donnée envoyée à l'étranger</h3>
+      <p>Tout tourne sur votre infrastructure locale. Vos clients restent vos clients — pas ceux d'une plateforme californienne.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-n">Open source</div>
+      <h3>Code entièrement ouvert</h3>
+      <p>Vous pouvez auditer, modifier et contrôler chaque composant de votre système. Pas de boîte noire.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-n">Sur mesure</div>
+      <h3>Configuré pour votre industrie</h3>
+      <p>Chaque agent est calibré avec vos tarifs, votre vocabulaire, et votre façon de travailler. Pas un chatbot générique.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-n">Prix PME</div>
+      <h3>Setup à partir de 1 500 $</h3>
+      <p>Pas d'abonnement SaaS à 500 $/mois. Un prix fixe, une livraison claire, une maintenance optionnelle.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap" id="contact">
+  <div class="cta-inner reveal">
+    <div class="section-label" style="color:rgba(255,255,255,0.35);margin-bottom:1.25rem">Commencez maintenant</div>
+    <h2>Les 2 premiers clients.<br><em>C'est gratuit.</em></h2>
+    <p>On configure votre AgentPME, on mesure les résultats ensemble. Si vous êtes satisfait, on parle du setup complet. Aucun engagement.</p>
+    <a href="mailto:contact@sing-automatiq.ca" class="btn-white">Réserver mon appel gratuit →</a>
+    <p class="cta-note">Réponse sous 24h · Sans engagement · Entièrement en français</p>
+  </div>
+</div>
+
+<footer>
+  <a href="#" class="footer-logo">S.I.N.G. · Système d'Information Nicolas Gosselin</a>
+  <p>Marque commerciale : SING Automatiq · Produit : AgentPME · Québec, Canada</p>
+</footer>
 
 <script>
-  const API = 'http://localhost:5000';
-  let sourceFile = null, targetFile = null;
-  let resultUrl = null;
-
-  // ── File inputs ──
-  document.getElementById('source-input').addEventListener('change', e => {
-    sourceFile = e.target.files[0];
-    if (sourceFile) previewFile(sourceFile, 'source-zone');
-    checkReady();
-  });
-  document.getElementById('target-input').addEventListener('change', e => {
-    targetFile = e.target.files[0];
-    if (targetFile) previewFile(targetFile, 'target-zone');
-    checkReady();
-  });
-
-  function previewFile(file, zoneId) {
-    const zone = document.getElementById(zoneId);
-    const isVid = file.type.startsWith('video/') || file.name.match(/\.(mp4|mov|gif|webm)/i);
-    const inputId = zoneId === 'source-zone' ? 'source' : 'target';
-    if (isVid) {
-      zone.innerHTML = '<div class="upload-icon">🎬</div><div class="upload-label">' + file.name + '</div><div class="upload-hint">Vidéo prête</div><button class="upload-btn" onclick="document.getElementById(\'' + inputId + '-input\').click()">Changer</button>';
-    } else {
-      const url = URL.createObjectURL(file);
-      zone.innerHTML = '<img class="preview-img" src="' + url + '" alt="preview"/><div class="preview-overlay"><div class="change-btn" onclick="document.getElementById(\'' + inputId + '-input\').click()">Changer</div></div>';
-    }
-  }
-
-  function checkReady() {
-    document.getElementById('swap-btn').disabled = !(sourceFile && targetFile);
-  }
-
-  // ── Drag & drop ──
-  function handleDrag(e, id) {
-    e.preventDefault();
-    document.getElementById(id + '-zone').classList.add('dragover');
-  }
-  function clearDrag(id) {
-    document.getElementById(id + '-zone').classList.remove('dragover');
-  }
-  function handleDrop(e, id) {
-    e.preventDefault();
-    clearDrag(id);
-    const file = e.dataTransfer.files[0];
-    if (!file) return;
-    if (id === 'source') { sourceFile = file; previewFile(file, 'source-zone'); }
-    else { targetFile = file; previewFile(file, 'target-zone'); }
-    checkReady();
-  }
-
-  // ── Tabs ──
-  document.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-    });
-  });
-
-  // ── Swap ──
-  async function doSwap() {
-    setError('');
-    showProgress(true);
-    setProgress(10, 'Upload des fichiers…');
-
-    const form = new FormData();
-    form.append('source', sourceFile);
-    form.append('target', targetFile);
-
-    try {
-      setProgress(30, 'Détection des visages…');
-
-      const res = await fetch(`${API}/swap`, { method: 'POST', body: form });
-      setProgress(70, 'Génération en cours sur GTX 1080 Ti…');
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Erreur serveur' }));
-        throw new Error(err.error || 'Erreur inconnue');
-      }
-
-      const blob = await res.blob();
-      resultUrl = URL.createObjectURL(blob);
-      setProgress(100, 'Terminé !');
-
-      setTimeout(() => {
-        showProgress(false);
-        showResult(resultUrl);
-      }, 500);
-
-    } catch (err) {
-      showProgress(false);
-      setError('❌ ' + err.message + ' — Vérifier que le serveur Python tourne sur le port 5000.');
-    }
-  }
-
-  function setProgress(pct, msg) {
-    document.getElementById('progress-fill').style.width = pct + '%';
-    document.getElementById('progress-status').textContent = msg;
-  }
-  function showProgress(show) {
-    document.getElementById('progress-section').style.display = show ? 'block' : 'none';
-    document.getElementById('swap-btn').disabled = show;
-    if (show) document.getElementById('result-section').style.display = 'none';
-  }
-  function showResult(url) {
-    const isVid = sourceFile && sourceFile.name.match(/\.(mp4|mov|gif|webm)/i);
-    const rb = document.querySelector('.result-body');
-    if (isVid) {
-      rb.innerHTML = '<video src="' + url + '" controls autoplay loop style="max-width:100%;max-height:480px;border-radius:10px"></video>';
-    } else {
-      rb.innerHTML = '<img id="result-img" src="' + url + '" alt="Résultat" style="max-width:100%;max-height:480px;border-radius:10px;object-fit:contain"/>';
-    }
-    document.getElementById('result-section').style.display = 'block';
-    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
-  }
-  function setError(msg) {
-    const el = document.getElementById('error-box');
-    el.style.display = msg ? 'block' : 'none';
-    el.textContent = msg;
-  }
-  function downloadResult() {
-    if (!resultUrl) return;
-    const a = document.createElement('a');
-    a.href = resultUrl;
-    const ext = sourceFile && sourceFile.name.match(/\.(mp4|mov|gif|webm)/i) ? '.mp4' : '.jpg'; a.download = 'faceswap_result_' + Date.now() + ext;
-    a.click();
-    toast('Téléchargement démarré ✓');
-  }
-  function resetAll() {
-    sourceFile = null; targetFile = null; resultUrl = null;
-    document.getElementById('result-section').style.display = 'none';
-    document.getElementById('source-zone').innerHTML = `
-      <input type="file" id="source-input" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.gif,.webm"/>
-      <div class="upload-icon">🖼️</div>
-      <div class="upload-label">Image / Vidéo source</div>
-      <div class="upload-hint">La tête à remplacer</div>
-      <button class="upload-btn" onclick="document.getElementById('source-input').click()">Choisir fichier</button>`;
-    document.getElementById('target-zone').innerHTML = `
-      <input type="file" id="target-input" accept=".jpg,.jpeg,.png,.webp"/>
-      <div class="upload-icon">🧑</div>
-      <div class="upload-label">Photo du visage cible</div>
-      <div class="upload-hint">Le visage à insérer</div>
-      <button class="upload-btn" onclick="document.getElementById('target-input').click()">Choisir fichier</button>`;
-    document.getElementById('source-input').addEventListener('change', e => { sourceFile = e.target.files[0]; if (sourceFile) previewFile(sourceFile, 'source-zone'); checkReady(); });
-    document.getElementById('target-input').addEventListener('change', e => { targetFile = e.target.files[0]; if (targetFile) previewFile(targetFile, 'target-zone'); checkReady(); });
-    checkReady();
-  }
-  function toast(msg) {
-    const el = document.getElementById('toast');
-    el.textContent = msg; el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 3000);
-  }
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on')}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 </body>
 </html>
