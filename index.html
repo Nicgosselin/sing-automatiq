@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FaceSwap AI — Propulsé par GTX 1080 Ti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --card: #1a1a26;
+      --border: #2a2a3d;
+      --accent: #7c5cfc;
+      --accent2: #e040fb;
+      --glow: rgba(124, 92, 252, 0.35);
+      --text: #eef0ff;
+      --muted: #6b6b8a;
+      --success: #22c55e;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background ambiance ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 0%, rgba(124,92,252,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 30% at 80% 100%, rgba(224,64,251,0.08) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(10,10,15,0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .badge-gpu {
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.4);
+      color: #b39dff;
+      font-size: 0.72rem; font-weight: 500;
+      padding: 4px 10px; border-radius: 20px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .badge-gpu::before { content: '⚡'; }
+
+    /* ── Main layout ── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .hero { text-align: center; margin-bottom: 3rem; }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.8rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p { color: var(--muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; gap: 8px; justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .tab {
+      padding: 10px 22px; border-radius: 40px;
+      font-size: 0.88rem; font-weight: 500; cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card); color: var(--muted);
+      transition: all .2s ease;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: transparent; color: #fff;
+      box-shadow: 0 0 20px var(--glow);
+    }
+    .tab:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+    /* ── Upload zone ── */
+    .workspace {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; margin-bottom: 1.5rem;
+    }
+    @media(max-width: 680px) { .workspace { grid-template-columns: 1fr; } }
+
+    .upload-card {
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      min-height: 260px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem; padding: 2rem;
+      cursor: pointer; transition: all .25s ease;
+      position: relative; overflow: hidden;
+    }
+    .upload-card:hover, .upload-card.dragover {
+      border-color: var(--accent);
+      background: rgba(124,92,252,0.06);
+      box-shadow: 0 0 30px rgba(124,92,252,0.12);
+    }
+    .upload-card input[type=file] { display: none; }
+
+    .upload-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: rgba(124,92,252,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      transition: transform .3s ease;
+    }
+    .upload-card:hover .upload-icon { transform: scale(1.1); }
+
+    .upload-label {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+    }
+    .upload-hint { color: var(--muted); font-size: 0.8rem; }
+
+    .upload-btn {
+      padding: 9px 20px; border-radius: 8px;
+      background: rgba(124,92,252,0.2);
+      border: 1px solid rgba(124,92,252,0.4);
+      color: #b39dff; font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; transition: all .2s;
+    }
+    .upload-btn:hover { background: rgba(124,92,252,0.35); }
+
+    /* ── Preview image ── */
+    .preview-img {
+      width: 100%; height: 100%;
+      object-fit: contain; border-radius: 10px;
+      position: absolute; inset: 0; padding: 12px;
+    }
+    .preview-overlay {
+      position: absolute; inset: 0;
+      background: rgba(10,10,15,0.7);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+      border-radius: var(--radius);
+    }
+    .upload-card:hover .preview-overlay { opacity: 1; }
+    .change-btn {
+      padding: 8px 18px; border-radius: 8px;
+      background: var(--accent); color: #fff;
+      font-weight: 600; font-size: 0.85rem;
+    }
+
+    /* ── CTA Button ── */
+    .cta-row { display: flex; justify-content: center; margin-bottom: 2rem; }
+    .swap-btn {
+      position: relative; overflow: hidden;
+      padding: 16px 48px; border-radius: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-family: 'Syne', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      border: none; cursor: pointer;
+      box-shadow: 0 8px 32px var(--glow);
+      transition: transform .2s, box-shadow .2s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .swap-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px var(--glow); }
+    .swap-btn:active { transform: translateY(0); }
+    .swap-btn:disabled {
+      opacity: 0.45; cursor: not-allowed;
+      transform: none; box-shadow: none;
+    }
+    .swap-btn::after {
+      content: ''; position: absolute;
+      inset: -2px; border-radius: 52px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      z-index: -1; filter: blur(10px); opacity: 0;
+      transition: opacity .3s;
+    }
+    .swap-btn:hover::after { opacity: 0.5; }
+
+    /* ── Result zone ── */
+    #result-section { display: none; }
+    .result-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .result-header {
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .result-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .success-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+    .result-body { padding: 1.5rem; display: flex; justify-content: center; }
+    #result-img {
+      max-width: 100%; max-height: 480px;
+      border-radius: 10px; object-fit: contain;
+    }
+    .result-actions { display: flex; gap: 10px; }
+    .action-btn {
+      padding: 8px 18px; border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent; color: var(--text);
+      font-size: 0.85rem; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: all .2s;
+    }
+    .action-btn:hover { border-color: var(--accent); background: rgba(124,92,252,0.1); }
+    .action-btn.primary {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .action-btn.primary:hover { background: #6a4ee8; }
+
+    /* ── Progress ── */
+    #progress-section { display: none; padding: 2rem 0; }
+    .progress-wrap { text-align: center; }
+    .progress-bar-bg {
+      background: var(--card); border-radius: 40px;
+      height: 6px; overflow: hidden; margin: 1rem auto;
+      max-width: 420px;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 40px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0%; transition: width .4s ease;
+      box-shadow: 0 0 12px var(--glow);
+    }
+    .progress-status { color: var(--muted); font-size: 0.88rem; margin-top: 0.5rem; }
+
+    /* ── Error ── */
+    #error-box {
+      display: none;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 10px; padding: 12px 18px;
+      color: #fca5a5; font-size: 0.9rem;
+      margin-bottom: 1rem; text-align: center;
+    }
+
+    /* ── Features ── */
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-top: 3rem;
+    }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.2rem;
+      transition: border-color .2s;
+    }
+    .feature-card:hover { border-color: rgba(124,92,252,0.4); }
+    .feat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .feat-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem;
+    }
+    .feat-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      background: var(--card); border: 1px solid var(--accent);
+      border-radius: 10px; padding: 12px 20px;
+      color: var(--text); font-size: 0.9rem;
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">FaceSwap AI</div>
+  <div class="badge-gpu">GTX 1080 Ti • CUDA</div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Swap de visage<br/><span>100% local & gratuit</span></h1>
+    <p>Traitement local propulsé par ta GTX 1080 Ti. Photos, vidéos et GIFs. Rien ne quitte ton PC.</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="photo">📸 Photo</div>
+    <div class="tab" data-tab="video">🎬 Vidéo / GIF</div>
+  </div>
+
+  <div id="error-box"></div>
+
+  <!-- Upload zone -->
+  <div class="workspace" id="workspace">
+    <!-- Source -->
+    <div class="upload-card" id="source-zone" ondragover="handleDrag(event,'source')" ondragleave="clearDrag('source')" ondrop="handleDrop(event,'source')">
+      <input type="file" id="source-input" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.gif,.webm"/>
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-label">Image / Vidéo source</div>
+      <div class="upload-hint">La tête à remplacer</div>
+      <button class="upload-btn" onclick="document.getElementById('source-input').click()">Choisir fichier</button>
+    </div>
+    <!-- Target face -->
+    <div class="upload-card" id="target-zone" ondragover="handleDrag(event,'target')" ondragleave="clearDrag('target')" ondrop="handleDrop(event,'target')">
+      <input type="file" id="target-input" accept=".jpg,.jpeg,.png,.webp"/>
+      <div class="upload-icon">🧑</div>
+      <div class="upload-label">Photo du visage cible</div>
+      <div class="upload-hint">Le visage à insérer</div>
+      <button class="upload-btn" onclick="document.getElementById('target-input').click()">Choisir fichier</button>
+    </div>
+  </div>
+
+  <div class="cta-row">
+    <button class="swap-btn" id="swap-btn" disabled onclick="doSwap()">
+      <span>⚡</span> Lancer le Swap
+    </button>
+  </div>
+
+  <!-- Progress -->
+  <div id="progress-section">
+    <div class="progress-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-status" id="progress-status">Préparation…</div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="result-section">
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-title">
+          <div class="success-dot"></div>
+          Résultat
+        </div>
+        <div class="result-actions">
+          <button class="action-btn" onclick="resetAll()">↩ Recommencer</button>
+          <button class="action-btn primary" id="download-btn" onclick="downloadResult()">⬇ Télécharger</button>
+        </div>
+      </div>
+      <div class="result-body">
+        <img id="result-img" src="" alt="Résultat face swap"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feature-card">
+      <div class="feat-icon">🔒</div>
+      <div class="feat-title">100% Local</div>
+      <div class="feat-desc">Aucune image envoyée sur le cloud. Tout reste sur ta machine.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">GPU Accéléré</div>
+      <div class="feat-desc">InsightFace + CUDA sur GTX 1080 Ti pour des résultats en secondes.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🎬</div>
+      <div class="feat-title">Photo & Vidéo</div>
+      <div class="feat-desc">Support JPG, PNG, MP4, MOV, GIF et WEBM jusqu'à 200 MB.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🎯</div>
+      <div class="feat-title">Multi-visages</div>
+      <div class="feat-desc">Détection et swap de plusieurs visages dans une même image.</div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'http://localhost:5000';
+  let sourceFile = null, targetFile = null;
+  let resultUrl = null;
+
+  // ── File inputs ──
+  document.getElementById('source-input').addEventListener('change', e => {
+    sourceFile = e.target.files[0];
+    if (sourceFile) previewFile(sourceFile, 'source-zone');
+    checkReady();
+  });
+  document.getElementById('target-input').addEventListener('change', e => {
+    targetFile = e.target.files[0];
+    if (targetFile) previewFile(targetFile, 'target-zone');
+    checkReady();
+  });
+
+  function previewFile(file, zoneId) {
+    const zone = document.getElementById(zoneId);
+    const isVid = file.type.startsWith('video/') || file.name.match(/\.(mp4|mov|gif|webm)/i);
+    const inputId = zoneId === 'source-zone' ? 'source' : 'target';
+    if (isVid) {
+      zone.innerHTML = '<div class="upload-icon">🎬</div><div class="upload-label">' + file.name + '</div><div class="upload-hint">Vidéo prête</div><button class="upload-btn" onclick="document.getElementById(\'' + inputId + '-input\').click()">Changer</button>';
+    } else {
+      const url = URL.createObjectURL(file);
+      zone.innerHTML = '<img class="preview-img" src="' + url + '" alt="preview"/><div class="preview-overlay"><div class="change-btn" onclick="document.getElementById(\'' + inputId + '-input\').click()">Changer</div></div>';
+    }
+  }
+
+  function checkReady() {
+    document.getElementById('swap-btn').disabled = !(sourceFile && targetFile);
+  }
+
+  // ── Drag & drop ──
+  function handleDrag(e, id) {
+    e.preventDefault();
+    document.getElementById(id + '-zone').classList.add('dragover');
+  }
+  function clearDrag(id) {
+    document.getElementById(id + '-zone').classList.remove('dragover');
+  }
+  function handleDrop(e, id) {
+    e.preventDefault();
+    clearDrag(id);
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    if (id === 'source') { sourceFile = file; previewFile(file, 'source-zone'); }
+    else { targetFile = file; previewFile(file, 'target-zone'); }
+    checkReady();
+  }
+
+  // ── Tabs ──
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+
+  // ── Swap ──
+  async function doSwap() {
+    setError('');
+    showProgress(true);
+    setProgress(10, 'Upload des fichiers…');
+
+    const form = new FormData();
+    form.append('source', sourceFile);
+    form.append('target', targetFile);
+
+    try {
+      setProgress(30, 'Détection des visages…');
+
+      const res = await fetch(`${API}/swap`, { method: 'POST', body: form });
+      setProgress(70, 'Génération en cours sur GTX 1080 Ti…');
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Erreur serveur' }));
+        throw new Error(err.error || 'Erreur inconnue');
+      }
+
+      const blob = await res.blob();
+      resultUrl = URL.createObjectURL(blob);
+      setProgress(100, 'Terminé !');
+
+      setTimeout(() => {
+        showProgress(false);
+        showResult(resultUrl);
+      }, 500);
+
+    } catch (err) {
+      showProgress(false);
+      setError('❌ ' + err.message + ' — Vérifier que le serveur Python tourne sur le port 5000.');
+    }
+  }
+
+  function setProgress(pct, msg) {
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-status').textContent = msg;
+  }
+  function showProgress(show) {
+    document.getElementById('progress-section').style.display = show ? 'block' : 'none';
+    document.getElementById('swap-btn').disabled = show;
+    if (show) document.getElementById('result-section').style.display = 'none';
+  }
+  function showResult(url) {
+    const isVid = sourceFile && sourceFile.name.match(/\.(mp4|mov|gif|webm)/i);
+    const rb = document.querySelector('.result-body');
+    if (isVid) {
+      rb.innerHTML = '<video src="' + url + '" controls autoplay loop style="max-width:100%;max-height:480px;border-radius:10px"></video>';
+    } else {
+      rb.innerHTML = '<img id="result-img" src="' + url + '" alt="Résultat" style="max-width:100%;max-height:480px;border-radius:10px;object-fit:contain"/>';
+    }
+    document.getElementById('result-section').style.display = 'block';
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+  }
+  function setError(msg) {
+    const el = document.getElementById('error-box');
+    el.style.display = msg ? 'block' : 'none';
+    el.textContent = msg;
+  }
+  function downloadResult() {
+    if (!resultUrl) return;
+    const a = document.createElement('a');
+    a.href = resultUrl;
+    const ext = sourceFile && sourceFile.name.match(/\.(mp4|mov|gif|webm)/i) ? '.mp4' : '.jpg'; a.download = 'faceswap_result_' + Date.now() + ext;
+    a.click();
+    toast('Téléchargement démarré ✓');
+  }
+  function resetAll() {
+    sourceFile = null; targetFile = null; resultUrl = null;
+    document.getElementById('result-section').style.display = 'none';
+    document.getElementById('source-zone').innerHTML = `
+      <input type="file" id="source-input" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.gif,.webm"/>
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-label">Image / Vidéo source</div>
+      <div class="upload-hint">La tête à remplacer</div>
+      <button class="upload-btn" onclick="document.getElementById('source-input').click()">Choisir fichier</button>`;
+    document.getElementById('target-zone').innerHTML = `
+      <input type="file" id="target-input" accept=".jpg,.jpeg,.png,.webp"/>
+      <div class="upload-icon">🧑</div>
+      <div class="upload-label">Photo du visage cible</div>
+      <div class="upload-hint">Le visage à insérer</div>
+      <button class="upload-btn" onclick="document.getElementById('target-input').click()">Choisir fichier</button>`;
+    document.getElementById('source-input').addEventListener('change', e => { sourceFile = e.target.files[0]; if (sourceFile) previewFile(sourceFile, 'source-zone'); checkReady(); });
+    document.getElementById('target-input').addEventListener('change', e => { targetFile = e.target.files[0]; if (targetFile) previewFile(targetFile, 'target-zone'); checkReady(); });
+    checkReady();
+  }
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
